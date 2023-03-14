@@ -6,7 +6,7 @@ import { ContactList } from "./contactList/ContactList";
 import { ContactItem } from "components/contactItem/ContactItem"
 import css from "components/App.module.css"
 
-
+const LS_KEY = "contacts";
 
 export class App extends Component {
   state = {
@@ -40,11 +40,6 @@ export class App extends Component {
    
   }  
   
- 
-  // reset() {
-  //   this.setState({name: "", number:""})
-  // }
-
   deleteContact = (contactId) => {
     
     this.setState(prevState => ({
@@ -62,6 +57,17 @@ export class App extends Component {
     const normalizedFilter = filter.toLowerCase()
     return contacts.filter(contact =>
       contact.name.toLowerCase().includes(normalizedFilter))
+  }
+
+  componentDidMount() {
+    const contactsLS = JSON.parse(localStorage.getItem(LS_KEY))
+    if(contactsLS){this.setState({contacts:contactsLS})}
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+      if (prevState.contacts !== this.state.contacts) {
+      localStorage.setItem(LS_KEY, JSON.stringify(this.state.contacts))
+    }
   }
 
   render() {
